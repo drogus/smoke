@@ -23,6 +23,32 @@ Additionally Smoke now has a macro for mocking anonymous functions this is great
 	$.bind('click', callback);
 	$.trigger('click');
 
+Ajax mocking (With Screw.Unit)
+-----------------------------
+
+It's as easy as Smoke.Ajax.mock("/giveMeNiceResponseBaby", "Nice Response", 200); which will mock response for given url. In Screw.Unit you need to also use wait() (available in [rsutphin's fork](http://github.com/rsutphin/screw-unit/tree/master)).
+
+Example:
+
+    Screw.Unit(function() {
+      describe("mocking ajax", function() {
+        it("allows mocking ajax request", function() {
+          Smoke.Ajax.mock("/giveMeNiceResponseBaby", "Nice Response", 200);
+          var data, textStatus;
+          $.ajax({
+            url: "/giveMeNiceResponseBaby",
+            success: function(data_, textStatus_) {
+              data = data_;
+              textStatus = textStatus_;
+          }});
+          wait(function() {
+            expect(data).to(equal, "Nice Response");
+            expect(textStatus).to(equal, "success");
+          }, 50);
+        });
+      });
+    });
+
 Getting Started (Free Standing)
 -------------------------------
 Include the library files in your document...
